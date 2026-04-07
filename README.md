@@ -18,14 +18,33 @@ Rất hữu ích khi bạn cần bắt request từ điện thoại (iOS/Android
 
 ## 🚀 Hướng dẫn sử dụng
 
-### Bước 1: Build Docker Image
-Mở Command Prompt (cmd) tại thư mục chứa `Dockerfile` và `entrypoint.sh`, chạy lệnh:
+### Bước 1: Khởi chạy Server (Chọn 1 trong 2 cách)
+
+Bạn cần cập nhật biến `PROXY_IP` thành IP mạng LAN thực tế của máy bạn (máy đang chạy Burp Suite, ví dụ: `192.168.100.1`).
+
+#### Cách 1: Sử dụng Docker Compose (Khuyên dùng)
+Sử dụng `docker-compose` giúp bạn không cần gõ lệnh dài dòng và tự động xử lý vấn đề tương thích đường dẫn giữa các hệ điều hành.
+
+1. Mở file `docker-compose.yml` bằng trình soạn thảo văn bản.
+2. Sửa giá trị `PROXY_IP=192.168.100.1` thành IP máy bạn.
+3. Mở Terminal / Command Prompt / PowerShell tại thư mục này và chạy lệnh:
+```bash
+docker compose up -d
+````
+
+*(Lệnh này sẽ tự động build image và chạy container. Để dừng và xóa container, dùng lệnh `docker compose down`)*
+
+#### Cách 2: Sử dụng Docker CLI truyền thống
+
+Nếu bạn không muốn dùng Docker Compose, bạn có thể tự build và chạy bằng các lệnh sau:
+
+**1. Build Docker Image:**
+
 ```cmd
 docker build -t openvpn-burp .
 ```
 
-### Bước 2: Khởi chạy Container
-Sử dụng lệnh dưới đây để chạy container. 
+**2. Chạy Container (chọn lệnh đúng với Shell của bạn):**
 
 **Lưu ý quan trọng trước khi chạy:**
 1. Cập nhật `PROXY_IP`: Thay `192.168.100.1` bằng IP mạng LAN thực tế của máy bạn (máy đang chạy Burp Suite).
@@ -53,7 +72,7 @@ docker run -d --name vpn-burp --cap-add=NET_ADMIN --sysctl net.ipv4.ip_forward=1
 - `-v .../openvpn_data:/etc/openvpn`: Lưu trữ dữ liệu chứng chỉ/server để không bị mất khi xóa container.
 - `-v .../output_config:/client_config`: Thư mục để container xuất file `client.ovpn` ra ngoài cho bạn sử dụng.
 
-### Bước 3: Bật Invisible Proxy trên Burp Suite (RẤT QUAN TRỌNG)
+### Bước 2: Bật Invisible Proxy trên Burp Suite (RẤT QUAN TRỌNG)
 Vì chúng ta đang dùng iptables để ép luồng traffic ở tầng mạng (DNAT), Burp Suite cần được bật tính năng Invisible Proxy để biết cách xử lý các request này.
 
 1. Mở **Burp Suite** > Bấm vào biểu tượng bánh răng **Settings** ở góc phải (hoặc nhấn `Ctrl + Shift + S`).
@@ -63,7 +82,7 @@ Vì chúng ta đang dùng iptables để ép luồng traffic ở tầng mạng (
 5. Tick vào ô **Support invisible proxying (enable only if needed)**.
 6. Bấm **OK** để lưu cấu hình. Cột *Invisible* của listener lúc này sẽ hiện dấu tick xanh.
 
-### Bước 4: Kết nối Client
+### Bước 3: Kết nối Client
 1. Mở thư mục `output_config` trên máy tính của bạn.
 2. Lấy file **`client.ovpn`** bên trong.
 3. Chuyển file này sang thiết bị Client (Điện thoại thật, máy ảo Android, v.v.) và import vào app OpenVPN Connect.
