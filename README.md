@@ -41,9 +41,9 @@ docker run -d --name vpn-burp --cap-add=NET_ADMIN --sysctl net.ipv4.ip_forward=1
 docker run -d --name vpn-burp --cap-add=NET_ADMIN --sysctl net.ipv4.ip_forward=1 --device=/dev/net/tun -p 1194:1194/udp -e PROXY_IP="192.168.100.1" -v "$(pwd)/openvpn_data:/etc/openvpn" -v "$(pwd)/output_config:/client_config" openvpn-burp
 ```
 
-**Nếu dùng CMD thuần (không phải PowerShell):** dùng đường dẫn tuyệt đối như `C:\path\to\openvpn\openvpn_data`.
+**Nếu dùng CMD thuần (không phải PowerShell):**
 ```cmd
-docker run -d --name vpn-burp --cap-add=NET_ADMIN --sysctl net.ipv4.ip_forward=1 --device=/dev/net/tun -p 1194:1194/udp -e PROXY_IP="192.168.100.1" -v "C:\path\to\openvpn\openvpn_data:/etc/openvpn" -v "C:\path\to\openvpn\output_config:/client_config" openvpn-burp
+docker run -d --name vpn-burp --cap-add=NET_ADMIN --sysctl net.ipv4.ip_forward=1 --device=/dev/net/tun -p 1194:1194/udp -e PROXY_IP="192.168.100.1" -v "%cd%\openvpn_data:/etc/openvpn" -v "%cd%\output_config:/client_config" openvpn-burp
 ```
 
 **Giải thích các cờ:**
